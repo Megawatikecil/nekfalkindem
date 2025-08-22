@@ -501,6 +501,7 @@ if A[3].error==1 or A[5].error==1 then error() return end
     for i = A[3].start, A[5].finish do
     o=I[i]
   x={'h200080D2','hC0035FD6'}
+		gg.alert("Dont click merge all,because it will remove all equipment in the inventory")
         if mr==off then arm() else revert() end
     end
     if mr==off then mr=on else mr=off end
@@ -1261,3 +1262,4 @@ while true do
        
     end 
 end 
+
