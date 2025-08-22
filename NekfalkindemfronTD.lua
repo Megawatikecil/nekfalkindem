@@ -70,29 +70,7 @@ os.remove(trash)
 
 
 --===================================
-Date=20      -- Expiry date
-Month=01       -- Expiry month 
-Year=2026   -- Expiry year
-expiremessage="Script has expired.Buy New version again"  --Expiry message 
---This script will expire on 15/05/2020
 
---Do not change below code
-function check(t) 
-if t<10 then t="0"..t end
-return t
-end
-expiredate=Year.. check(Month).. check(Date)
-date=gg.makeRequest("http://www.guimp.com").headers["Date" ][1]  --guimp.com is smallest webpage so takes less time for loading 
-month={"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
-for i=1,12 do
- if month[i]==string.sub(date,9, 11) then
-      if i<10 then
-       i="0"..i 
-      end 
- currentdate=string.sub(date,13, 16)..i..string.sub(date,6, 7)  
- end
-end
-if tonumber(currentdate)>=tonumber(expiredate) then gg.alert(expiremessage) os.exit() end 
 
 
 LUA = 'NIGHTFALL KINGDOM FRONTIER TD[Auto Update].lua'
@@ -140,6 +118,7 @@ v=gg.getTargetInfo()
 off="[ × ] " on="[ √ ] " OFF ="[ ❍⊃ ] " ON="[ ⊂❍ ] " offf="[ ⊂❍⊃ ] "
 gm=off ck=off 
 sh=off  sh2=off sh3=off NA=OFF eq=offf
+lv=off mr=off
 gs=1 
 b=1 w=2 d=4 f=16 q=32 e=64 
 function menu()
@@ -147,15 +126,16 @@ gg.setRanges(gg.REGION_ANONYMOUS)
 gg.toast(xTAGx)  
 mc=gg.multiChoice({
 	gm.."FREE IN-APP PURCHASE",
-	--"SILVER COIN BATTLE",
+	ck.."AUTO LAST WAVE",
+	sh.."BUILDING HIGH HP",
+	mr.."MERGE NO REQUIRED DUPLICATE",
+	"•••SILVER COIN BATTLE•••",
+	"•••LEVEL EQUIPMENT•••",
+	
 	    "[ INFO ]",
 	
 	"[ EXIT ]"},nil,  (os.date([[╭ ─┉──┉──┉──┉───┉──¡! • !¡──┉───┉──┉──┉──┉─ ╮
-   Script Author : Riff kimochii
-   ─┉─Cheating Is An Art In The Game─┉─
-   ══════════════════════════════════════
-  Game : NIGHTFALL KINGDOM FRONTIER TD
-  Version : Latest
+   Akira_Kohei
    ══════════════════════════════════════
   Today : %A, %d %B %Y
   Time : %H : %M : %S
@@ -163,23 +143,16 @@ mc=gg.multiChoice({
 	
 	if mc==nil then cancel() return end
 	if mc[1] then godmode() end
-	--if mc[2] then a1() end 
-	if mc[2] then camera() end 
-	
-	
-xhaX={
-    gm.."FREE IN-APP PURCHASE",
-    "SILVER COIN BATTLE",
-	    "[ INFO ]",
-	
-	}
-xhaX=table.concat(xhaX, "\n")
-xhaX=tostring(xhaX) 
+	if mc[2] then wave() end
+	if mc[3] then building() end 
+	if mc[4] then merge() end 
+	if mc[5] then a1() end
+	if mc[6] then level() end
+	if mc[7] then camera() end 
 
-	if mc[3] then exit() return end 
+	if mc[8] then exit() return end 
 
-gg.toast("[√] Complete") 
-gg.alert(GLabel.." "..GVersion.." "..xBITx.."\n\n"..xhaX,"OK",nil,xTAGx)  
+gg.toast("[√] Complete")  
 
 end
 --███████████████████████
@@ -236,18 +209,378 @@ function godmode()
     end
 end 
     
-function a1()
-         wait() x="4030;4;4:9" t=d search()
-        x="4030" refine()
-      o=0x30 offset()
-       x="1203982336" t=d edit()
-    end 
- 
     
+    
+CK=0
+function wave()
+    if CK==0 then
+        -- cari base address
+        gg.clearResults()
+        gg.setRanges(32)
+        gg.searchNumber(13, gg.TYPE_QWORD)
+        HackersHouse = gg.getResults(250000)
+
+        Offsets = {}
+        Offsets['FirstOffset'] = {}
+        Offsets['SecondOffset'] = {}
+        Offsets['FinalResults'] = {}
+        OffsetsIndex = 1
+
+        for i, v in ipairs(HackersHouse) do
+            Offsets['FirstOffset'][OffsetsIndex] = {
+                address = v.address - 32,
+                flags = gg.TYPE_QWORD
+            }
+            Offsets['SecondOffset'][OffsetsIndex] = {
+                address = v.address - 28,
+                flags = gg.TYPE_QWORD
+            }
+            OffsetsIndex = OffsetsIndex + 1
+        end
+
+        Offsets['FirstOffset'] = gg.getValues(Offsets['FirstOffset'])
+        Offsets['SecondOffset'] = gg.getValues(Offsets['SecondOffset'])
+
+        OffsetsIndex = 1
+        for i, v in ipairs(Offsets['FirstOffset']) do
+            if (Offsets['FirstOffset'][i].value == 1099511627776) 
+               and (Offsets['SecondOffset'][i].value == 256) then
+                Offsets['FinalResults'][OffsetsIndex] = Offsets['FirstOffset'][i]
+                OffsetsIndex = OffsetsIndex + 1
+            end
+        end
+
+        for i, v in ipairs(Offsets['FinalResults']) do
+            v.address = v.address + 112
+            v.flags = 4
+        end
+
+        gg.loadResults(Offsets['FinalResults'])
+        check() if E==0 then error() return end
+
+        local tmp = gg.getResults(gg.getResultsCount())
         
+        -- simpan nilai original
+        original = {}
+        for i, v in ipairs(tmp) do
+            original[i] = {
+                address = v.address,
+                flags   = v.flags,
+                value   = v.value
+            }
+        end
+
+        -- copy buat nilai edit
+        x4 = {}
+        for i, v in ipairs(tmp) do
+            x4[i] = {
+                address = v.address,
+                flags   = v.flags,
+                value   = v.value
+            }
+        end
+
+        CK=1
+        ck=off
+    end
+
+    if ck==off then
+        for i, v in ipairs(x4) do
+            v.value=15
+            v.freeze=true
+        end
+        gg.setValues(x4)
+        gg.addListItems(x4) -- freeze aktif
+        gg.alert("Hack Last Wave ON\n\nNote:Turn off then turn on again if doesn't work")
+        ck=on
+    else
+        gg.removeListItems(x4) -- hapus freeze
+        gg.setValues(original) -- restore nilai asli
+        gg.alert("Hack Last Wave OFF\n\nNote:Turn off then turn on again if doesn't work")
+        ck=off
+    end
+end
+
+
+
+
+function a1()
+    local choice = gg.alert(
+        "Hack Silver Coin.\n\nPlease activate in battle.\n\nAre you in battle?",
+        "Yes",      -- button 1
+        "No",       -- button 2
+        "Akira_Kohei"  -- button 3
+    )
+
+    if choice == 1 then
+        -- Yes, lanjut ke input value
+        local xinput = gg.prompt(
+            {"Input Value Silver Coin You Want:"},
+            {900},     -- default value
+            {"number"} -- tipe input
+        )
+
+        if xinput == nil then
+            gg.toast("❌ Canceled")
+            return
+        end
+
+        clear() 
+        wait() 
+        x="21474840491" t=32 search()
+       -- x="21474837483" t=32 search()
+       -- x="12884902889" t=32 search()
+        check() if E==0 then error() return end     
+
+        o=0x30 t=16 offset() 
+        x="0~1000000" refine() t=16
+        check() if E==0 then error() return end     
+
+        x=tostring(xinput[1]) t=16 edit()
+
+        gg.clearList()
+        gg.clearResults()
+        gg.toast("✅ H4ck Activate, value = "..xinput[1])
+
+    elseif choice == 2 then
+        -- No
+        gg.toast("❌ Canceled, back to menu")
+        return
+
+    elseif choice == 3 then
+        -- Minimize
+        gg.toast("🔽 Minimized")
+        gg.setVisible(false)
+        -- tunggu sampai GG muncul lagi
+        while true do
+            if gg.isVisible(true) then
+                gg.setVisible(false)
+                -- balik ke fungsi a1
+                return a1()
+            end
+        end
+    end
+end
+
+function a11()
+clear() wait() x="12884902889" t=32 search()
+        check() if E==0 then error() return end     
+        o=0x10 t=16 offset() 
+        x="0~1000000" refine() t=16
+        check() if E==0 then error() return end     
+        x="900" t=16 edit()
+         gg.clearList()
+         gg.clearResults()
+         gg.toast("H4ck Activate")
+    end
+
+function a11()
+clear() wait() x="Thread" t=4 o=0x788 class()
+        x="1001" refine() t=4
+        check() if E==0 then error() return end     
+        o=0x10 t=16 offset() 
+        x="0~1000000" refine() t=16
+        check() if E==0 then error() return end     
+        x="1000000" t=16 edit()
+    end
+
+function a11()
+clear() wait() x="Thread" t=4 o=0x848 class()
+        x="500~100000" refine() t=4
+        check() if E==0 then error() return end     
+        o=0x10 t=16 offset() 
+        x="0~1000000" refine() t=16
+        check() if E==0 then error() return end     
+        x="1000000" t=16 edit()
+    end
+
+
+original_values_a5 = original_values_a5 or {}
+function level()
+    clear()
+    wait()
+    xinput = gg.prompt(
+        {
+            [1] = "Akira_Kohei\nInput Value Level Equipment You Want.\nMax Value Input 2147483646.",
+          --  [2] = "✔ Restore Original Values (Uncheck = Activate Hack)"
+        },
+        {
+            [1] = '100',
+          --  [2] = false
+        },
+        {
+            [1] = 'number',
+        --    [2] = 'checkbox'
+        }
+    )
+
+    if not xinput then
+        gg.toast("Canceled")
+        gg.sleep(1000)
+        gg.toast("Please Input Value")
+        return
+    end
+
+    if xinput[2] then
+        if original_values_a5 and #original_values_a5 > 0 then
+            gg.removeListItems(original_values_a5) 
+            gg.setValues(original_values_a5)      
+            gg.toast("Values Restored")
+        else
+            gg.toast("No values to restore")
+        end
+        return
+    end
+
+    gg.setRanges(gg.REGION_ANONYMOUS)
+    clear()
+    wait()
+ 
+    x = "3;-1;1;-1;2;-1;4;-1::53"
+    t = 4
+    search()
+    x = "3" t = 4 refine()
+    check()
+    if E == 0 then
+        error()
+        return
+    end
+
+    local baseResults = gg.getResults(10000000)
+    original_values_a5 = {}
+    local offsets = {0xC, 0x1C, 0x2C, 0x3C}
+    local flatResults = {}
+
+    for _, off in ipairs(offsets) do
+        for _, v in ipairs(baseResults) do
+            local addr = v.address + off
+            local nv = {
+                address = addr,
+                flags = gg.TYPE_DWORD,
+                value = tonumber(xinput[1]), -- pakai input angka
+                freeze = false,
+                name = "Type_" .. string.format("%X", off)
+            }
+            table.insert(flatResults, nv)
+            table.insert(original_values_a5, {
+                address = addr,
+                flags = gg.TYPE_DWORD,
+                value = gg.getValues({{address = addr, flags = gg.TYPE_DWORD}})[1].value
+            })
+        end
+    end
+  --  gg.addListItems(flatResults)
+    gg.setValues(flatResults)
+    gg.clearResults()
+    gg.toast("H4ck Activate")
+end
+    
+A[1].class="BuildingDataContainer" 
+A[1].method="get_CurrentHealth" 
+A[2].class="BuildingDataContainer" 
+A[2].method="get_MaxHealth" 
+function building()
+if A[1].error==1 or A[2].error==1 then error() return end
+    for i = A[1].start, A[2].finish do
+    o=I[i]
+   x={'528D6500h','72A9DDC0h','1E270000h','D65F03C0h'} --2b flo
+        if sh==off then arm() else revert() end
+    end
+    if sh==off then sh=on else sh=off end
+end 
+ 
+ 
+A[3].class="ItemFusionService" 
+A[3].method="FoodIsCopy" 
+A[4].class="ItemFusionService" 
+A[4].method="IsFoodForMainItem"
+A[5].class="ItemFusionService" 
+A[5].method="CanFusionItem"
+function merge()
+if A[3].error==1 or A[5].error==1 then error() return end
+    for i = A[3].start, A[5].finish do
+    o=I[i]
+  x={'h200080D2','hC0035FD6'}
+        if mr==off then arm() else revert() end
+    end
+    if mr==off then mr=on else mr=off end
+end        
         
 --███████████████████████
+if v.x64 then
+xtrue="h200080D2" -- MOV X0, #0x1
+xfalse="h000080D2" -- MOV X0, #0x0 
+xEND="hC0035FD6" -- RET
+else 
+xtrue="h0100A0E3" -- MOVW R0, #1 
+xfalse="h0000A0E3" -- MOVW R0, #0 
+xEND="h1EFF2FE1" -- BX LR 
+end 
 
+
+function arm()
+o=tonumber(o) 
+    for XxX=1,#(xAPEXx) do
+        xdump=nil xdump={} 
+        if type(x)~="table" then 
+        xdump[1]={} xdump[2]={}
+        xdump[1].address=xAPEXx[XxX] + o
+        xdump[1].flags=4
+            if x==0 then xdump[1].value=xfalse end
+            if x==1 then xdump[1].value=xtrue end
+            if x~=0 and x~=1 then xdump[1].value=x end 
+        xdump[2].address=xAPEXx[XxX]+(o+4)
+        xdump[2].flags=4
+        xdump[2].value=xEND 
+        else
+        cc=0
+            for c=1,#(x) do
+            xdump[c]={} 
+            xdump[c].address=xAPEXx[XxX]+o+cc
+            xdump[c].flags=4   
+            xdump[c].value=tostring(x[c])
+            cc=cc+4
+            end         
+        end 
+    gg.setValues(xdump) 
+    end 
+end 
+
+
+------------------------------------------------------------------------------  
+function revert()
+    for XxX=1,#(xAPEXx) do 
+    REVERT=nil REVERT={} xRx=nil xRx=1 
+        for i, v in ipairs(ORIG) do
+            if tonumber(xAPEXx[XxX]+o)==ORIG[i].address then
+                if type(x)~="table" then
+                    REVERT[xRx]={}
+                    REVERT[xRx].address=xAPEXx[XxX]+o
+                    REVERT[xRx].flags=4
+                    REVERT[xRx].value=ORIG[i].value
+                    xRx=xRx+1
+                    REVERT[xRx]={}
+                    REVERT[xRx].address=xAPEXx[XxX]+o+4
+                    REVERT[xRx].flags=4
+                    REVERT[xRx].value=ORIG[i+1].value 
+                    xRx=xRx+1 
+                else              
+                offcnt=0 tnuc=0
+                    for dfg=1,#(x) do 
+                    REVERT[xRx]={}
+                    REVERT[xRx].address=xAPEXx[XxX]+o+offcnt 
+                    REVERT[xRx].flags=4
+                    REVERT[xRx].value=ORIG[i+tnuc].value
+                    offcnt=offcnt+4 tnuc=tnuc+1 xRx=xRx+1
+                    end 
+                end 
+            gg.setValues(REVERT) 
+            break
+            end
+            -- xRx+1 
+        end 
+    end 
+end 
 -- class StageData 
 -- int stamina; // 0x10
 
@@ -386,6 +719,12 @@ function search()
 gg.getResults(gg.getResultsCount())
 gg.clearResults()
 gg.searchNumber(x,t) 
+end 
+
+function error()
+gg.toast("× ERROR,VALUE NOT FOUND ×")
+
+gg.sleep(1000)
 end 
 
 --███████████████████████
@@ -714,8 +1053,199 @@ apexload=gg.getValues(apexload) gg.loadResults(apexload) gg.removeListItems(apex
 end
 
 
+------------------------------------------------------------------------
+::XGETREADYX::
+plwt=gg.alert(xTAGx.."\n\n"..GLabel.."\n"..v.versionName.."  "..GVersion.."\n"..LUA.."\n"..AUalert,"[ START ]","[ NO ]","[ -- EXIT -- ]") 
+if plwt==3 then exit() return end 
+if plwt==2 then
+    gg.setVisible(false) 
+    while true do
+        if gg.isVisible() then gg.setVisible(false) break end
+    end
+    goto XGETREADYX
+    return
+end 
+--███████████████████████
+if v.x64 then off1=-16 typ=32 else off1=-8 typ=4 end 
+gg.setRanges(gg.REGION_OTHER | gg.REGION_C_ALLOC | gg.REGION_ANONYMOUS) 
 
+ATOTAL=0
+for i = 1,100 do
+    if A[i].method==nil then break end
+    ATOTAL=ATOTAL+1
+end 
 
+ASTART=1 AEND=0 ATABT=ATOTAL+1 ATAB=1
+S=0 
+    while ATAB<=ATOTAL do 
+    ::AUTOSTART::
+    gg.setVisible(false)
+        if ATAB>ATOTAL then break goto FINISHED end 
+    gg.toast("Please Wait.. [ "..ATABT-ATAB.." ]") 
+    A[ATAB].error=1 
+    ANAME=nil ANAME={}
+    if A[ATAB].name~=nil then 
+        for i = 1,#(tostring(A[ATAB].name)) do
+            ANAME[i]=string.byte(A[ATAB].name,i) 
+        end 
+    else
+        A[ATAB].name=0
+    end 
+    ACLASS=nil ACLASS={}
+    if A[ATAB].class~=nil then 
+        for i = 1,#(tostring(A[ATAB].class))+1 do
+            if i == #(tostring(A[ATAB].class))+1 then 
+                ACLASS[i]=0 
+            else
+                ACLASS[i]=string.byte(A[ATAB].class,i) 
+            end 
+        end 
+    else
+        A[ATAB].class=0
+    end 
+    
+                ASTART=AEND+1
+                clear() t=1 
+                gg.searchNumber(":"..tostring(A[ATAB].method),1) 
+                xm=gg.getResults(2) gg.getResults(gg.getResultsCount())
+                check() 
+                    if E==0 then ATAB=ATAB+1 
+                        if ATAB>ATOTAL then break return end
+                    goto AUTOSTART return 
+                    end 
+                x=xm[1].value..";"..xm[2].value.."::2" refine()
+                x=xm[1].value refine() 
+                o=-1 offset() x=0 refine() oo=#(tostring(A[ATAB].method))
+                o=oo+1 offset() refine() o=-oo offset()
+                check() 
+                    if E==0 then ATAB=ATAB+1 
+                        if ATAB>ATOTAL then break return end
+                    goto AUTOSTART return 
+                    end 
+                gg.searchPointer(0) xcount=gg.getResultsCount()
+                xpoint=gg.getResults(xcount,nil, nil, nil, nil, nil, nil, nil,gg.POINTER_READ_ONLY)
+                    if #(xpoint)==0 then ATAB=ATAB+1 
+                        if ATAB>ATOTAL then break return end
+                    goto AUTOSTART return 
+                    end 
+                clear() 
+                    for xp=1,#(xpoint) do
+                    xpoint[xp].address=xpoint[xp].address+off1
+                    xpoint[xp].flags=typ
+                    end
+                gg.loadResults(xpoint) 
+                xoff=gg.getResults(#(xpoint),nil, nil, nil, nil, nil, nil, nil, gg.POINTER_EXECUTABLE)
+                    if #(xoff)==0 then ATAB=ATAB+1 
+                        if ATAB>ATOTAL then break return end
+                    goto AUTOSTART return 
+                    end 
+                    xfin=1
+                    while xfin<=#(xoff) do 
+                    ::XFIN:: 
+                        if xfin>#(xoff) then ATAB=ATAB+1
+                            if ATAB>ATOTAL then break return end 
+                        goto AUTOSTART return
+                        end 
+                        if gg.getTargetInfo().x64 then 
+                            xadd=tonumber(xoff[xfin].value)  
+                        else 
+                            xadd=string.format("%X",tonumber(xoff[xfin].value)) 
+                            xadd=string.sub(tostring(xadd), -8,-1)
+                            xadd=tonumber("0x"..xadd) 
+                        end     
+                    gval1=nil gval1={} gval1[1]={}
+                        if gg.getTargetInfo().x64 then gvo=24 gvo1=16 gvo2=24 else gvo=12 gvo1=8 gvo2=12 end 
+                    gval1[1].address=xoff[xfin].address+gvo
+                    gval1[1].flags=typ
+                    gval1=gg.getValues(gval1) 
+                        if gg.getTargetInfo().x64 then 
+                            gval=tonumber(gval1[1].value)  
+                        else 
+                            gval=string.format("%X",tonumber(gval1[1].value)) 
+                            gval=string.sub(tostring(gval), -8,-1)
+                            gval=tonumber("0x"..gval) 
+                        end     
+                    gval2=nil gval2={} gval2[1]={} gval2[2]={}
+                    gval2[1].address=gval+gvo1
+                    gval2[1].flags=typ
+                    gval2[2].address=gval+gvo2
+                    gval2[2].flags=typ 
+                    gval2=gg.getValues(gval2)
+                        if gg.getTargetInfo().x64 then 
+                            gval21=tonumber(gval2[1].value)  
+                            gval22=tonumber(gval2[2].value) 
+                        else 
+                            gval21=string.format("%X",tonumber(gval2[1].value)) 
+                            gval21=string.sub(tostring(gval21), -8,-1)
+                            gval21=tonumber("0x"..gval21) 
+                            gval22=string.format("%X",tonumber(gval2[2].value)) 
+                            gval22=string.sub(tostring(gval22), -8,-1)
+                            gval22=tonumber("0x"..gval22) 
+                        end    
+                         xrefine=0
+                         if A[ATAB].class~=0 then 
+                            for xyz=1,#(ACLASS) do
+                                gvalc={} gvalc[1]={} 
+                                gvalc[1].address=gval21+(xyz-1)
+                                gvalc[1].flags=1                        
+                                gvalc=gg.getValues(gvalc) 
+                                if gvalc[1].value~=ACLASS[xyz] then xrefine=1 break xfin=xfin+1 goto XFIN end
+                            end
+                        end 
+                        
+                        if A[ATAB].name~=0 then 
+                            for xyz=1,#(ANAME) do
+                                gvalc={} gvalc[1]={} 
+                                gvalc[1].address=gval22+(xyz-1)
+                                gvalc[1].flags=1                        
+                                gvalc=gg.getValues(gvalc) 
+                                    if gvalc[1].value~=ANAME[xyz] then xrefine=1 break xfin=xfin+1 goto XFIN end                                
+                            end
+                        end 
+                         
+                         if xrefine==0 then 
+                        A[ATAB].start=ASTART AEND=AEND+1
+                        A[ATAB].finish=AEND 
+                        A[ATAB].error=0 
+                        clear() I[AEND]=xadd-xAPEXx[xXx]
+                        end 
+                    xfin=xfin+1             
+                    end -- xfin 
+    ATAB=ATAB+1
+    end -- ATAB 
+    
+---------------------------------------------------
+
+::FINISHED:: 
+ xBAR=0
+    for i = 1, ATOTAL do 
+        if A[i].error~=0 then xBAR=xBAR+1 end
+    end
+    if xBAR>=ATOTAL  then 
+        gg.toast("×× FAILURE ××") gg.alert("× AUTO UPDATE FAILURE ×","EXIT",nil, xTAGx)  
+        exit() 
+        return
+    end 
+    if xBAR>=1 then gg.toast("× ERROR ×") gg.alert("× Auto Update Errors\nSome/All Hacks May Not Work","OK",nil, xTAGx) 
+    end
+--███████████████████████
+--███████████████████████
+if xREV==1 then
+xRx=1 ORIG={} xREV={} 
+    for XxX=1,#(xAPEXx) do   
+        for i, v in ipairs(I) do 
+        thiscunt=0
+            for dfg=1,7 do 
+            ORIG[xRx]={}
+            ORIG[xRx].address=xAPEXx[XxX]+tonumber(I[i])+thiscunt 
+            ORIG[xRx].flags=4 
+            xRx=xRx+1 
+            thiscunt=thiscunt+4 
+            end 
+        end    
+    end 
+ORIG=gg.getValues(ORIG) 
+end 
 
 
 
@@ -731,6 +1261,3 @@ while true do
        
     end 
 end 
-
-
-
