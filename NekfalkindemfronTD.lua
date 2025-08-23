@@ -126,11 +126,11 @@ gg.setRanges(gg.REGION_ANONYMOUS)
 gg.toast(xTAGx)  
 mc=gg.multiChoice({
 	gm.."FREE IN-APP PURCHASE",
-	ck.."AUTO LAST WAVE",
-	sh.."BUILDING HIGH HP",
-	mr.."MERGE NO REQUIRED DUPLICATE",
-	"•••SILVER COIN BATTLE•••",
-	"•••LEVEL EQUIPMENT•••",
+	--ck.."AUTO LAST WAVE",
+	--sh.."BUILDING HIGH HP",
+	--mr.."MERGE NO REQUIRED DUPLICATE",
+	--"•••SILVER COIN BATTLE•••",
+	--"•••LEVEL EQUIPMENT•••",
 	
 	    "[ INFO ]",
 	
@@ -143,14 +143,14 @@ mc=gg.multiChoice({
 	
 	if mc==nil then cancel() return end
 	if mc[1] then godmode() end
-	if mc[2] then wave() end
-	if mc[3] then building() end 
-	if mc[4] then merge() end 
-	if mc[5] then a1() end
-	if mc[6] then level() end
-	if mc[7] then camera() end 
+	--if mc[2] then wave() end
+	--if mc[3] then building() end 
+	--if mc[4] then merge() end 
+	--if mc[5] then a1() end
+	--if mc[6] then level() end
+	--if mc[7] then camera() end 
 
-	if mc[8] then exit() return end 
+	if mc[2] then exit() return end 
 
 gg.toast("[√] Complete")  
 
@@ -1263,5 +1263,6 @@ while true do
        
     end 
 end 
+
 
 
