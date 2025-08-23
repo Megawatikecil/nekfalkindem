@@ -148,9 +148,9 @@ mc=gg.multiChoice({
 	--if mc[4] then merge() end 
 	--if mc[5] then a1() end
 	--if mc[6] then level() end
-	--if mc[7] then camera() end 
+	if mc[2] then camera() end 
 
-	if mc[2] then exit() return end 
+	if mc[3] then exit() return end 
 
 gg.toast("[√] Complete")  
 
@@ -1263,6 +1263,7 @@ while true do
        
     end 
 end 
+
 
 
 
