@@ -118,7 +118,7 @@ v=gg.getTargetInfo()
 off="[ × ] " on="[ √ ] " OFF ="[ ❍⊃ ] " ON="[ ⊂❍ ] " offf="[ ⊂❍⊃ ] "
 gm=off ck=off 
 sh=off  sh2=off sh3=off NA=OFF eq=offf
-lv=off mr=off
+lv=off mr=off cs=off
 gs=1 
 b=1 w=2 d=4 f=16 q=32 e=64 
 function menu()
@@ -126,11 +126,12 @@ gg.setRanges(gg.REGION_ANONYMOUS)
 gg.toast(xTAGx)  
 mc=gg.multiChoice({
 	gm.."FREE IN-APP PURCHASE",
-	--ck.."AUTO LAST WAVE",
-	--sh.."BUILDING HIGH HP",
-	--mr.."MERGE NO REQUIRED DUPLICATE",
-	--"•••SILVER COIN BATTLE•••",
-	--"•••LEVEL EQUIPMENT•••",
+	ck.."AUTO LAST WAVE[WORLD MAP]",
+	cs.."AUTO LAST WAVE[ADVENTURE]",
+	sh.."BUILDING HIGH HP",
+	mr.."MERGE NO REQUIRED DUPLICATE",
+	"•••SILVER COIN BATTLE•••",
+	"•••LEVEL EQUIPMENT•••",
 	
 	    "[ INFO ]",
 	
@@ -143,14 +144,15 @@ mc=gg.multiChoice({
 	
 	if mc==nil then cancel() return end
 	if mc[1] then godmode() end
-	--if mc[2] then wave() end
-	--if mc[3] then building() end 
-	--if mc[4] then merge() end 
-	--if mc[5] then a1() end
-	--if mc[6] then level() end
-	if mc[2] then camera() end 
+	if mc[2] then wave() end
+	if mc[3] then wave1() end
+	if mc[4] then building() end 
+	if mc[5] then merge() end 
+	if mc[6] then a1() end
+	if mc[7] then level() end
+	if mc[8] then camera() end 
 
-	if mc[3] then exit() return end 
+	if mc[9] then exit() return end 
 
 gg.toast("[√] Complete")  
 
@@ -209,7 +211,86 @@ function godmode()
     end
 end 
     
-    
+
+CS = 0 -- status awal
+
+function wave1()
+if CS == 0 then
+   
+::XGETX::
+zora=gg.alert("Hack Wave Adventure.\n\nPlease activate in battle.\n\nAre you in battle?",
+        "Yes",      -- button 1
+        "No",       -- button 2
+        "Akira_Kohei"  -- button 3
+    )
+if zora==3 then 
+gg.setVisible(false) 
+    while true do
+        if gg.isVisible() then gg.setVisible(false) break end
+    end
+    goto XGETX
+    return
+end 
+if zora==2 then
+   return 
+   gg.setVisible(true)
+   end 
+
+
+            clear()
+            wait()
+            x = "1099511627776Q;256D::5"
+            t = 32
+            search()
+
+            x = "256"
+            t = 4
+            refine()
+            check()
+            if E == 0 then error() return end
+
+            o = 0x28
+            t = 4
+            offset()
+            x = "1000~2000"
+            t = 4
+            refine()
+            check()
+            if E == 0 then error() return end
+
+            o = 0x4
+            t = 4
+            offset()
+            x = "0~50"
+            t = 4
+            refine()
+            check()
+            if E == 0 then error() return end
+
+            x5 = gg.getResults(gg.getResultsCount())
+            x6 = gg.getResults(gg.getResultsCount()) -- simpan original
+            clear()
+CS=1
+end
+       if cs == off then
+            for i, v in ipairs(x6) do
+                v.value = 50
+                v.freeze = true
+            end
+            gg.setValues(x6)
+            gg.addListItems(x6)
+
+            gg.alert("✅ Hack Last Wave ON\n\nNote: Turn OFF then ON again if doesn't work")
+            cs = on
+        else
+            -- ================== OFF ==================
+            gg.removeListItems(x6)       -- hapus dari list
+            gg.setValues(x5)             -- restore nilai asli
+            gg.toast("❌ Hack Last Wave OFF\n\nNote: Turn OFF then ON again if doesn't work")
+            cs = off
+        end
+end
+        
     
 CK=0
 function wave()
@@ -296,7 +377,7 @@ function wave()
     else
         gg.removeListItems(x4) -- hapus freeze
         gg.setValues(original) -- restore nilai asli
-        gg.alert("Hack Last Wave OFF\n\nNote:Turn off then turn on again if doesn't work")
+        gg.toast("Hack Last Wave OFF\n\nNote:Turn off then turn on again if doesn't work")
         ck=off
     end
 end
@@ -497,12 +578,10 @@ A[4].method="IsFoodForMainItem"
 A[5].class="ItemFusionService" 
 A[5].method="CanFusionItem"
 function merge()
-	gg.alert("Dont click merge all,because it will remove all equipment in the inventory")
 if A[3].error==1 or A[5].error==1 then error() return end
     for i = A[3].start, A[5].finish do
     o=I[i]
   x={'h200080D2','hC0035FD6'}
-		
         if mr==off then arm() else revert() end
     end
     if mr==off then mr=on else mr=off end
@@ -1263,7 +1342,4 @@ while true do
        
     end 
 end 
-
-
-
 
