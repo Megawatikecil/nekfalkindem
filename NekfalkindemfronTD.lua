@@ -750,7 +750,7 @@ if zora==2 then
 
         -- ====== Tambahkan pengecekan minimal 700 hasil ======
         local hasil = gg.getResultsCount()
-        if hasil < 600 then
+        if hasil < 500 then
             gg.alert("❌Value not found,Search results less than 500,Please do gacha premium once in the gacha menu\n\n❌Value tidak ditemukan,Hasil pencarian kurang dari 500,Tolong lakukan gacha premium sekali di menu gacha")
             clear()
             error()
@@ -1700,4 +1700,5 @@ while true do
        
     end 
 end 
+
 
